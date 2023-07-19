@@ -1,0 +1,65 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: lx-snow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: intercom-oncall
+  template:
+    spec:
+      volumes:
+        - name: credentials-volume
+          secret:
+            secretName: skype-credentials
+            defaultMode: 420
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: intercom-oncall
+          env:
+            - name: DISPLAY
+              value: ':99'
+            - name: PYTHONUNBUFFERED
+              value: '1'
+            - name: SSO-PIN
+              valueFrom:
+                secretKeyRef:
+                  name: skype-credentials
+                  key: SSO-PIN
+            - name: SKYPE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: skype-credentials
+                  key: SKYPE_USERNAME
+            - name: SKYPE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: skype-credentials
+                  key: SKYPE_PASSWORD
+          imagePullPolicy: Always
+          terminationMessagePolicy: File
+          image: 'quay.io/carias_rh/lx-toolbox-base-chrome:0.1'
+          args:
+            - /bin/sh
+            - -c
+            - python3 main.py
+        - name: xvfb
+          image: docker.io/metal3d/xvfb
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
