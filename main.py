@@ -13,8 +13,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(
 
 
 driver = webdriver.Remote(
-   command_executor='http://standalone-firefox:4444/wd/hub')
-
+   command_executor='http://standalone-firefox-ui-lx-snow.apps.tools-na100.dev.ole.redhat.com/wd/hub',
+   desired_capabilities={'browserName': 'firefox', 'javascriptEnabled': True})
 
 def intercom_login():
     logging.info("Intercom login")
