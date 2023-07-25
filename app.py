@@ -11,10 +11,11 @@ from selenium import webdriver
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
-
+options = webdriver.FirefoxOptions()
+options.set_capability('browserName', 'firefox')
 driver = webdriver.Remote(
    command_executor='http://standalone-firefox-ui-lx-snow.apps.tools-na100.dev.ole.redhat.com/wd/hub',
-   desired_capabilities={'browserName': 'firefox', 'javascriptEnabled': True})
+   options=options)
 
 def intercom_login():
     logging.info("Intercom login")
@@ -47,26 +48,38 @@ def skype_login():
         driver.execute_script("window.open('');")
         driver.switch_to.window(driver.window_handles[1])
         driver.get('https://web.skype.com/')
+        # Introduce username
         WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form[1]/div/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div[3]/div/div/div/div[2]/div[2]/div/input[1]'))).send_keys(os.environ.get('SKYPE_USERNAME'))
         WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form[1]/div/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div[3]/div/div/div/div[4]/div/div/div/div/input'))).click()
+
+        # Introduce password
         WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form[1]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div/div[3]/div/div[2]/input'))).send_keys(os.environ.get('SKYPE_PASSWORD'))
         WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form[1]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div/div[4]/div[2]/div/div/div/div/input'))).click()
+
+        # Check box to skip another login
         WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div/div[3]/div[1]/div/label/input'))).click()
         WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div/div[3]/div[2]/div/div/div[2]/input'))).click()
-        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/div[3]/button/div'))).click()
-        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div[2]/div/div/div[1]/div/div[1]/div[3]/div[1]/div[1]/div[1]/button'))).click()
+
+        # Click on notification and  tutorial pop-ups
+        click_popups()
         driver.switch_to.window(driver.window_handles[0])
     except:
         logging.error("Skype login failed")
         driver.switch_to.window(driver.window_handles[0])
+
+def click_popups():
+    # Click on notification and  tutorial pop-ups
+    WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/div[3]/button'))).click()
+    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[1]/button'))).click()
+
 
 def skype_call():
     try:
         driver.switch_to.window(driver.window_handles[1])
         # Make the call
         logging.info("Calling")
-        WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div[2]/div/div/div[1]/div/div[1]/div[3]/div[1]/div[3]/div[2]/div[1]/div/div[1]/div/div/div[3]/div[3]/div/div/div[2]'))).click()
-        WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div[2]/div/div/div[1]/div/div[2]/div/div/div/div[1]/div[1]/div[1]/div[2]/div/button'))).click()
+        WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div/div[1]/div[2]/div[1]/div[3]/div[1]/div[3]/div[2]/div[1]/div/div[1]/div/div/div[3]/div[3]/div/div/div[2]/div[1]'))).click()
+        WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div/div[1]/div[2]/div[2]/div/div/div/div[1]/div[1]/div[1]/div[2]/div/button'))).click()
         # Do it without video or audio
         try:
             WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div/div/div/div/div/button'))).click()
