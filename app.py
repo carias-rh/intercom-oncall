@@ -33,11 +33,8 @@ def intercom_login():
                 (By.XPATH, '//*[@id="view_container"]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div/div/ul/li[1]/div/div[1]/div/div[2]/div[2]'))).click()
 
         # RH SSO
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="username"]'))).send_keys(
-            "carias")
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="password"]'))).send_keys(
-            str(os.environ.get('SSO-PIN')).replace('\n', '') + str(os.popen("curl -sL https://sso-rh-login-lx-snow.apps.tools-na100.dev.ole.redhat.com/get_otp").read()).replace(
-                '\n', ''))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="username"]'))).send_keys("carias")
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="password"]'))).send_keys(str(os.environ.get('SSO-PIN')).replace('\n', '') + str(os.popen("curl -sL https://sso-rh-login-lx-snow.apps.tools-na100.dev.ole.redhat.com/get_otp").read()).replace('\n', ''))
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="submit"]'))).click()
         time.sleep(5)
     except:
