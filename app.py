@@ -39,6 +39,7 @@ def intercom_login():
             str(os.environ.get('SSO-PIN')).replace('\n', '') + str(os.popen("curl -sL https://sso-rh-login-lx-snow.apps.tools-na100.dev.ole.redhat.com/get_otp").read()).replace(
                 '\n', ''))
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="submit"]'))).click()
+        time.sleep(5)
     except:
         logging.error("An exception occurred while accepting during login")
 
