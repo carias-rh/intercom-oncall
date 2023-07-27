@@ -129,6 +129,9 @@ while True:
     # Get customer's name
     new_customer_name = get_customer_name()
 
+    # If there is no customer on line, reset the customer_name variables
+    if new_customer_name == '': customer_name = ''
+
     # If it's an expert chat and it hasn't call before because of it, make a call
     if is_expert_chat() and customer_name != new_customer_name:
         logging.info("New chat from: " + new_customer_name)
