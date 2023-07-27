@@ -111,10 +111,11 @@ intercom_login()
 skype_login()
 customer_name = ''
 new_customer_name = ''
+counter = 0
 
 while True:
     try:
-        new_customer = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[1]/div/div[4]/ul/div/div/li/a/div[2]/div[1]/div[1]')))
+        new_customer = WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[1]/div/div[4]/ul/div/div/li/a/div[2]/div[1]/div[1]')))
         new_customer.click()
         new_customer_name = new_customer.text
     except:
@@ -124,5 +125,9 @@ while True:
         logging.info("New chat from: " + new_customer_name)
         customer_name = wait_for_expert_chat()
         skype_call()
-    driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
-    time.sleep(20)
+    time.sleep(5)
+    counter += counter +1
+    # Reload site every 12 hours
+    if counter > 4320:
+        driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
+        counter=0
