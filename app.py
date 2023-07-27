@@ -128,7 +128,7 @@ while True:
         customer_name = wait_for_expert_chat()
         skype_call()
     time.sleep(5)
-    counter += counter +1
+    counter += 1
     # Reload site every 12 hours
     if counter > 4320:
         driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
