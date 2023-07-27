@@ -89,8 +89,10 @@ def skype_call():
         # Wait for the hang_up
         time.sleep(10)
         logging.info("Ended call")
+        driver.refresh()
         driver.switch_to.window(driver.window_handles[0])
     except:
+        driver.refresh()
         logging.error("Call failed")
         driver.switch_to.window(driver.window_handles[0])
 
