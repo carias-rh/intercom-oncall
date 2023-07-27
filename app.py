@@ -96,18 +96,28 @@ def skype_call():
         logging.error("Call failed")
         driver.switch_to.window(driver.window_handles[0])
 
-def wait_for_expert_chat():
+def get_customer_name():
     try:
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[2]/div[1]//*[contains(text(), "Expert") or contains(text(), "@T2")]'))).text
-        customer_name = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[1]/div/div[4]/ul/div/div/li/a/div[2]/div[1]/div[1]'))).text
+        # Get the name of the customer name in the list
+        customer_item = WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[1]/div/div[4]/ul/div/div/li/a/div[2]/div[1]/div[1]')))
+        customer_item.click()
+        customer_name = customer_item.text.replace('\n', '')
+        return customer_name
     except:
         return ''
         pass
-    return customer_name
+
+
+def is_expert_chat():
+    try:
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[2]/div[1]//*[contains(text(), "Expert") or contains(text(), "@T2")]'))).text
+        logging.info("Is an expert chat")
+        return True
+    except:
+        return False
 
 
 # Main
-
 logging.info("Starting selenium script")
 intercom_login()
 skype_login()
@@ -116,20 +126,19 @@ new_customer_name = ''
 counter = 0
 
 while True:
-    try:
-        new_customer = WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[1]/div/div[4]/ul/div/div/li/a/div[2]/div[1]/div[1]')))
-        new_customer.click()
-        new_customer_name = new_customer.text
-    except:
-        pass
+    # Get customer's name
+    new_customer_name = get_customer_name()
 
-    if customer_name != new_customer_name:
+    # If it's an expert chat and it hasn't call before because of it, make a call
+    if is_expert_chat() and customer_name != new_customer_name:
         logging.info("New chat from: " + new_customer_name)
-        customer_name = wait_for_expert_chat()
         skype_call()
+        customer_name = new_customer_name
+
     time.sleep(5)
+
     counter += 1
     # Reload site every 12 hours
     if counter > 8000:
         driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
-        counter=0
+        counter = 0
