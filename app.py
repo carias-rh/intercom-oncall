@@ -130,6 +130,6 @@ while True:
     time.sleep(5)
     counter += 1
     # Reload site every 12 hours
-    if counter > 4320:
+    if counter > 8000:
         driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
         counter=0
