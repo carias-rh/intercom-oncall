@@ -87,7 +87,7 @@ def skype_call():
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div/div/div/div/div/button'))).click()
             pass
         # Wait for the hang_up
-        time.sleep(10)
+        time.sleep(120)
         logging.info("Ended call")
         driver.refresh()
         driver.switch_to.window(driver.window_handles[0])
