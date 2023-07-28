@@ -111,9 +111,10 @@ def get_customer_name():
 def is_expert_chat():
     try:
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[2]/div[1]//*[contains(text(), "Expert") or contains(text(), "@T2")]'))).text
-        logging.info("Is an expert chat")
+        logging.debug("Is an expert chat")
         return True
     except:
+        logging.debug("NOT an expert chat")
         return False
 
 
