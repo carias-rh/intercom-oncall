@@ -15,8 +15,7 @@ options = webdriver.FirefoxOptions()
 options.set_preference("permissions.default.microphone", True)
 options.set_capability('browserName', 'firefox')
 driver = webdriver.Remote(
-   command_executor='http://standalone-firefox-ui-lx-snow.apps.tools-na100.dev.ole.redhat.com/wd/hub',
-   options=options)
+   command_executor=str(os.environ.get('SELENIUM_GRID_OPENSHIT_ROUTE')) + "/wd/hub", options=options)
 
 def intercom_login():
     logging.info("Intercom login")
@@ -34,7 +33,7 @@ def intercom_login():
 
         # RH SSO
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="username"]'))).send_keys("carias")
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="password"]'))).send_keys(str(os.environ.get('SSO-PIN')).replace('\n', '') + str(os.popen("curl -sL https://sso-rh-login-lx-snow.apps.tools-na100.dev.ole.redhat.com/get_otp").read()).replace('\n', ''))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="password"]'))).send_keys(str(os.environ.get('SSO-PIN')).replace('\n', '') + str(os.popen("curl -sL " + str(os.environ.get('SSO_LOGIN_OPENSHIFT_ROUTE')) + "/get_otp").read()).replace('\n', ''))
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="submit"]'))).click()
         time.sleep(5)
     except:
