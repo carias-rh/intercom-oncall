@@ -125,7 +125,6 @@ def get_customer_name():
         customer_name = customer_item.text.replace('\n', '')
         return customer_name
     except Exception as e:
-        handle_exception(e)
         return ''
         pass
 
