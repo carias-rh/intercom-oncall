@@ -14,8 +14,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(
 options = webdriver.FirefoxOptions()
 options.set_preference("permissions.default.microphone", True)
 options.set_capability('browserName', 'firefox')
-driver = webdriver.Remote(
-   command_executor=str(os.environ.get('SELENIUM_GRID_OPENSHIT_ROUTE')) + "/wd/hub", options=options)
+driver = webdriver.Remote(command_executor=str(os.environ.get('SELENIUM_GRID_OPENSHIT_ROUTE')) + "/wd/hub", options=options)
+driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
+
 
 def intercom_login():
     logging.info("Intercom login")
@@ -25,8 +26,7 @@ def intercom_login():
             (By.XPATH, '//*[@class="m__login__form"]//*[contains(text(), "Sign in with Google")]'))).click()
         try:
             WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="identifierId"]'))).send_keys("carias" + "@redhat.com")
-            WebDriverWait(driver, 3).until(EC.element_to_be_clickable(
-                (By.XPATH, '//*[contains(text(), "Next")]'))).click()
+            WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, '//*[contains(text(), "Next")]'))).click()
         except:
             WebDriverWait(driver, 3).until(EC.element_to_be_clickable(
                 (By.XPATH, '//*[@id="view_container"]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div/div/ul/li[1]/div/div[1]/div/div[2]/div[2]'))).click()
@@ -97,6 +97,9 @@ def skype_call():
 
 def get_customer_name():
     try:
+        # Click on my profile name
+        WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[3]/div/div/div/div[2]/div/div/div[2]/div[1]/div/a/div[2]/span[1]'))).click()
+
         # Get the name of the customer name in the list
         customer_item = WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[1]/div/div[4]/ul/div/div/li/a/div[2]/div[1]/div[1]')))
         customer_item.click()
