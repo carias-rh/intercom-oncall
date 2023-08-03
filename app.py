@@ -124,7 +124,7 @@ def get_customer_name():
         customer_item.click()
         customer_name = customer_item.text.replace('\n', '')
         return customer_name
-    except Exception as e:
+    except:
         return ''
         pass
 
