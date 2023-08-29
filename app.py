@@ -163,6 +163,12 @@ while True:
     time.sleep(5)
 
     counter += 1
+    # Check intercom is logged in 10 minutes
+    if counter > 120:
+        try:
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[1]/div[5]/div[2]/div/div')))
+        except:
+            intercom_login()
     # Reload site every 12 hours
     if counter > 8000:
         driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
