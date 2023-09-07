@@ -94,7 +94,9 @@ def skype_call():
         driver.switch_to.window(driver.window_handles[1])
         # Make the call
         logging.info("Calling")
-        WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div/div[1]/div[2]/div[1]/div[3]/div[1]/div[3]/div[2]/div[1]/div/div[1]/div/div/div[3]/div[3]/div/div/div[2]/div[1]'))).click()
+        # Select user
+        WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div/div[1]/div[2]/div[1]/div[3]/div[1]/div[4]/div[2]/div[1]/div/div[1]/div/div/div[3]/div[3]/div/div/div[2]'))).click()
+        # Click call button
         WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div/div[1]/div[2]/div[2]/div/div/div/div[1]/div[1]/div[1]/div[2]/div/button'))).click()
         # Do it without video or audio
         try:
