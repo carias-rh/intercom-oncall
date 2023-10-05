@@ -171,8 +171,9 @@ while True:
         try:
             WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Your Inbox"]')))
         except:
-            intercom_login()
             login_counter = 0
+            intercom_login()
+
 
     refresh_counter += 1
     # Reload site every 12 hours
