@@ -132,9 +132,17 @@ def get_customer_name():
 
 
 def is_expert_chat():
+    # Detect if Expert or T2 mention in any message
     try:
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[2]/div[1]//*[contains(text(), "Expert") or contains(text(), "@T2")]'))).text
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[2]/div[1]//*[contains(text(), "Expert") or contains(text(), "@T2") or contains(text(), "Tier") or contains(text(), "assist")]')))
         logging.debug("Is an expert chat")
+        return True
+    except:
+        pass
+    # Detect if there is a note
+    try:
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[2]/div[1]//*[@data-part-group-category="4"]')))
+        logging.debug("Is an expert chat transfered from T1")
         return True
     except:
         logging.debug("NOT an expert chat")
