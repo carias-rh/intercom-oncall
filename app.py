@@ -63,17 +63,17 @@ def skype_login():
         driver.execute_script("window.open('');")
         driver.switch_to.window(driver.window_handles[1])
         driver.get('https://web.skype.com/')
+
         # Introduce username
-        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form[1]/div/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div[3]/div/div/div/div[2]/div[2]/div/input[1]'))).send_keys(os.environ.get('SKYPE_USERNAME'))
-        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form[1]/div/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div[3]/div/div/div/div[4]/div/div/div/div/input'))).click()
+        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '//*[@name="loginfmt"]'))).send_keys(os.environ.get('SKYPE_USERNAME'))
+        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '//*[@type="submit"]'))).click()
 
         # Introduce password
-        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form[1]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div/div[3]/div/div[2]/input'))).send_keys(os.environ.get('SKYPE_PASSWORD'))
-        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form[1]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div/div[4]/div[2]/div/div/div/div/input'))).click()
+        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '//*[@name="passwd"]'))).send_keys(os.environ.get('SKYPE_PASSWORD'))
+        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '//*[@type="submit"]'))).click()
 
         # Check box to skip another login
-        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div/div[3]/div[1]/div/label/input'))).click()
-        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/form/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div/div[3]/div[2]/div/div/div[2]/input'))).click()
+        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '//*[@type="submit"]'))).click()
 
         # Click on notification and  tutorial pop-ups
         click_popups()
@@ -162,10 +162,10 @@ while True:
     # Get customer's name
     new_customer_name = get_customer_name()
 
-    # If there is no customer on line, reset the customer_name variables
+    # If there is no customer online, reset the customer_name variables
     if new_customer_name == '': customer_name = ''
 
-    # If it's an expert chat and it hasn't call before because of it, make a call
+    # If it's an expert chat, and it hasn't called before because of it, make a call
     if is_expert_chat() and customer_name != new_customer_name:
         logging.info("New chat from: " + new_customer_name)
         skype_call()
@@ -173,8 +173,8 @@ while True:
 
     time.sleep(5)
 
-    login_counter += 1
     # Check intercom is logged in 10 minutes
+    login_counter += 1
     if login_counter > 120:
         try:
             WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Your Inbox"]')))
@@ -182,9 +182,8 @@ while True:
             login_counter = 0
             intercom_login()
 
-
-    refresh_counter += 1
     # Reload site every 12 hours
+    refresh_counter += 1
     if refresh_counter > 8000:
         driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
         refresh_counter = 0
