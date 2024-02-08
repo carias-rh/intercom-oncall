@@ -156,7 +156,7 @@ skype_login()
 customer_name = ''
 new_customer_name = ''
 refresh_counter = 0
-login_counter = 0
+intercom_login_counter = 0
 
 while True:
     # Get customer's name
@@ -174,12 +174,13 @@ while True:
     time.sleep(5)
 
     # Check intercom is logged in 10 minutes
-    login_counter += 1
-    if login_counter > 120:
+    intercom_login_counter += 1
+    if intercom_login_counter > 120:
         try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Your Inbox"]')))
+            logging.info("Checking intercom login")
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@data-intercom-target="your-inbox"]')))
         except:
-            login_counter = 0
+            intercom_login_counter = 0
             intercom_login()
 
     # Reload site every 12 hours
