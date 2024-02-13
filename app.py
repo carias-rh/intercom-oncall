@@ -4,8 +4,7 @@ import time, os.path, logging, sys, traceback
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.service import Service
-
+from datetime import datetime
 from selenium import webdriver
 
 
@@ -171,7 +170,7 @@ while True:
         skype_call()
         customer_name = new_customer_name
 
-    time.sleep(5)
+    time.sleep(2)
 
     # Check intercom is logged in 10 minutes
     login_counter += 1
@@ -184,6 +183,14 @@ while True:
 
     # Reload site every 12 hours
     refresh_counter += 1
-    if refresh_counter > 8000:
+    if refresh_counter > 4000:
         driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
         refresh_counter = 0
+
+    current_utc_time = datetime.datetime.utcnow()
+
+    if current_utc_time.hour >= 18:
+        logging.info("Ending day")
+        break
+
+driver.quit()
