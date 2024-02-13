@@ -14,7 +14,23 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(
 options = webdriver.FirefoxOptions()
 options.set_preference("permissions.default.microphone", True)
 options.set_capability('browserName', 'firefox')
-driver = webdriver.Remote(command_executor=str(os.environ.get('SELENIUM_GRID_OPENSHIT_ROUTE')) + "/wd/hub", options=options)
+
+# Set the path of the Firefox binary
+firefox_binary_path = "/usr/bin/firefox-esr"
+options.binary_location = firefox_binary_path
+
+# Set the display port as an environment variable
+display_port = os.environ.get("DISPLAY_PORT", "99")
+display = f":{display_port}"
+os.environ["DISPLAY"] = display
+
+# Start the Xvfb server
+xvfb_cmd = f"Xvfb {display} -screen 0 1024x768x24 -nolisten tcp &"
+os.system(xvfb_cmd)
+
+# Start the Firefox driver
+driver = webdriver.Firefox(options=options)
+
 driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
 
 def handle_exception(e):
