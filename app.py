@@ -187,7 +187,7 @@ while True:
         driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
         refresh_counter = 0
 
-    current_utc_time = datetime.datetime.utcnow()
+    current_utc_time = datetime.utcnow()
 
     if current_utc_time.hour >= 18:
         logging.info("Ending day")
