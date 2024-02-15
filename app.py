@@ -158,6 +158,8 @@ def is_expert_chat():
 
 def say_hello():
     try:
+        # Make sure it's in reply mode, not note
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[2]/div/div/div[2]/div[1]/div/a'))).send_keys('r')
         textbox = WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '//*[@role="textbox"]')))
         textbox.send_keys('#carlos_hello')
         textbox.send_keys(Keys.ENTER)
@@ -209,7 +211,7 @@ while True:
 
     current_utc_time = datetime.utcnow()
 
-    if current_utc_time.hour >= 18:
+    if current_utc_time.hour <= 18:
         logging.info("Ending day")
         break
 
