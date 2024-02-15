@@ -160,8 +160,10 @@ def say_hello():
         textbox = WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '//*[@role="textbox"]')))
         textbox.send_keys('#carlos_hello')
         textbox.send_keys(Keys.ENTER)
+        time.sleep(1)
         textbox.send_keys(Keys.CONTROL + Keys.ENTER)
-        logging.info("Said hello to student")
+        time.sleep(1)
+        logging.info("Say Hello to student")
     except:
         logging.error("Failed to say Hello")
 
