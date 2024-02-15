@@ -4,6 +4,7 @@ import time, os.path, logging, sys, traceback
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from datetime import datetime
 from selenium import webdriver
 
@@ -104,6 +105,12 @@ def skype_call():
         except:
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[2]/div/div/div/div/div/div/button'))).click()
             pass
+
+        # Say hello on intercom
+        driver.switch_to.window(driver.window_handles[0])
+        say_hello()
+        driver.switch_to.window(driver.window_handles[1])
+
         # Wait for the hang_up
         time.sleep(60)
         logging.info("Ended call")
@@ -147,6 +154,16 @@ def is_expert_chat():
         logging.debug("NOT an expert chat")
         return False
 
+
+def say_hello():
+    try:
+        textbox = WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '//*[@role="textbox"]')))
+        textbox.send_keys('#carlos_hello')
+        textbox.send_keys(Keys.ENTER)
+        textbox.send_keys(Keys.CONTROL + Keys.ENTER)
+        logging.info("Said hello to student")
+    except:
+        logging.error("Failed to say Hello")
 
 # Main
 logging.info("Starting selenium script")
