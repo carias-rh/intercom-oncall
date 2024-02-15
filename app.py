@@ -83,6 +83,7 @@ def skype_login():
         driver.switch_to.window(driver.window_handles[0])
         handle_exception(e)
 
+
 def click_popups():
     # Click on notification and  tutorial pop-ups
     WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/div[3]/button'))).click()
@@ -212,4 +213,5 @@ while True:
         logging.info("Ending day")
         break
 
+# Closing instance to save memory
 driver.quit()
