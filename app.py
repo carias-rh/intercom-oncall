@@ -176,8 +176,6 @@ intercom_login()
 skype_login()
 customer_name = ''
 new_customer_name = ''
-refresh_counter = 0
-login_counter = 0
 
 while True:
     # Get customer's name
@@ -194,24 +192,9 @@ while True:
 
     time.sleep(2)
 
-    # Check intercom is logged in 10 minutes
-    login_counter += 1
-    if login_counter > 120:
-        try:
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Your Inbox"]')))
-        except:
-            login_counter = 0
-            intercom_login()
-
-    # Reload site every 12 hours
-    refresh_counter += 1
-    if refresh_counter > 4000:
-        driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
-        refresh_counter = 0
-
     current_utc_time = datetime.utcnow()
 
-    if current_utc_time.hour <= 18:
+    if current_utc_time.hour >= 18:
         logging.info("Ending day")
         break
 
