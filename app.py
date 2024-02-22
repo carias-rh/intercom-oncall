@@ -200,3 +200,4 @@ while True:
 
 # Closing instance to save memory
 driver.quit()
+time.sleep(1200)
