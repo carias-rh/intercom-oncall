@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 ### Maintained by carias@redhat.com
-import time, os.path, logging, sys, traceback
+import time, os.path, logging, sys, traceback, re
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -55,6 +55,49 @@ def intercom_login():
     except Exception as e:
         logging.error("An exception occurred while accepting during login")
         handle_exception(e)
+
+def intercom_change_status(change_status_to):
+    logging.info(f"Change intercom status to {change_status_to}")
+    try:
+        avatar = WebDriverWait(driver, 15).until(EC.element_to_be_clickable(
+            (By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[1]/div[5]/div/div/div')))
+        avatar.click()
+        status_raw = avatar.get_attribute(
+            "class")
+    except:
+        avatar = WebDriverWait(driver, 15).until(EC.element_to_be_clickable(
+            (By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[1]/div[5]/div[2]/div/div')))
+        avatar.click()
+        status_raw = avatar.get_attribute(
+            "class")
+
+    # Get attributes from the gravatar
+    status_away = re.findall("o__away", status_raw)
+    status_active = re.findall("o__active", status_raw)
+    time.sleep(1)
+    try:
+        # Change status to Away if actual status is active
+        if change_status_to == "Away" and status_active:
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[2]/div/div/button/span'))).click()
+
+            # Reason "Done for the day"
+            time.sleep(1)
+            avatar.click()
+            reason = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[4]/div/div[1]/div/div[1]')))
+            actions.move_to_element(reason).perform()
+            done_for_the_day = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[4]/div/div[2]/div/div/div/div[7]')))
+            actions.move_to_element(done_for_the_day).click().perform()
+
+            # Reassign replies
+            time.sleep(1)
+            avatar.click()
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[3]/div/div/button'))).click()
+
+        # Change status to Active if actual status is Away
+        if change_status_to == "Active" and status_away:
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[2]/div/div/button/span'))).click()
+    except:
+        print("Failed to change intercom status")
 
 
 def skype_login():
@@ -173,6 +216,7 @@ def say_hello():
 # Main
 logging.info("Starting selenium script")
 intercom_login()
+intercom_change_status("Active")
 skype_login()
 customer_name = ''
 new_customer_name = ''
@@ -194,10 +238,10 @@ while True:
 
     current_utc_time = datetime.utcnow()
 
-    if current_utc_time.hour >= 18:
+    if current_utc_time.hour >= 14 and current_utc_time.minute == 30:
         logging.info("Ending day")
+        intercom_change_status("Away")
         break
 
 # Closing instance to save memory
 driver.quit()
-time.sleep(1200)
