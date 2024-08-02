@@ -136,9 +136,8 @@ def click_popups():
 def check_inactive():
     try:
         WebDriverWait(driver, 1).until(
-            EC.element_to_be_clickable((By.XPATH, '//input[@type="checkbox"]'))).click()
-        WebDriverWait(driver, 1).until(
             EC.element_to_be_clickable((By.XPATH, '//button[text()="Set to active"]'))).click()
+        logging.info("Inactive Dialog - Setting profile to active")
     except:
         pass
 
