@@ -49,7 +49,7 @@ def intercom_login():
 
         # RH SSO
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="username"]'))).send_keys("carias")
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="password"]'))).send_keys(str(os.environ.get('SSO-PIN')).replace('\n', '') + str(os.popen("curl -sL " + str(os.environ.get('SSO_LOGIN_OPENSHIFT_ROUTE')) + "/get_otp").read()).replace('\n', ''))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="password"]'))).send_keys(str(os.environ.get('SSO_PIN')).replace('\n', '') + str(os.popen("curl -sL " + str(os.environ.get('SSO_LOGIN_OPENSHIFT_ROUTE')) + "/get_otp").read()).replace('\n', ''))
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="submit"]'))).click()
         time.sleep(5)
     except Exception as e:
@@ -132,6 +132,17 @@ def click_popups():
     WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/div[3]/button'))).click()
     WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div/div[1]/div[2]/div[1]/div[3]/div[1]/div[1]/div[1]/button'))).click()
 
+# Checks if intercom prompted for inactive user to turn to active state
+def check_inactive():
+    global activated
+    try:
+        WebDriverWait(driver, 1).until(
+            EC.element_to_be_clickable((By.XPATH, '//input[@type="checkbox"]'))).click()
+        WebDriverWait(driver, 1).until(
+            EC.element_to_be_clickable((By.XPATH, '//button[text()="Set to active"]'))).click()
+        activated = True
+    except:
+        pass
 
 def skype_call():
     try:
@@ -220,9 +231,13 @@ intercom_change_status("Active")
 skype_login()
 customer_name = ''
 new_customer_name = ''
+activated = False
 
 while True:
     # Get customer's name
+    if not activated:
+        check_inactive()
+
     new_customer_name = get_customer_name()
 
     # If there is no customer online, reset the customer_name variables
