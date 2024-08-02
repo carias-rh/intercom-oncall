@@ -134,13 +134,11 @@ def click_popups():
 
 # Checks if intercom prompted for inactive user to turn to active state
 def check_inactive():
-    global activated
     try:
         WebDriverWait(driver, 1).until(
             EC.element_to_be_clickable((By.XPATH, '//input[@type="checkbox"]'))).click()
         WebDriverWait(driver, 1).until(
             EC.element_to_be_clickable((By.XPATH, '//button[text()="Set to active"]'))).click()
-        activated = True
     except:
         pass
 
@@ -234,10 +232,10 @@ new_customer_name = ''
 activated = False
 
 while True:
-    # Get customer's name
-    if not activated:
-        check_inactive()
+    # Check that there is no inactive dialog
+    check_inactive()
 
+    # Get customer's name
     new_customer_name = get_customer_name()
 
     # If there is no customer online, reset the customer_name variables
