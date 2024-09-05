@@ -249,11 +249,14 @@ while True:
     time.sleep(2)
 
     current_utc_time = datetime.utcnow()
+    try:
+        if current_utc_time.hour >= os.environ.get('LOG_OUT_HOUR') and current_utc_time.minute == os.environ.get('LOG_OUT_MINUTE'):
+            logging.info("Ending day")
+            intercom_change_status("Away")
+            break
+    except:
+        logging.error("Couldn't close intercom session")
 
-    if current_utc_time.hour >= 14 and current_utc_time.minute == 30:
-        logging.info("Ending day")
-        intercom_change_status("Away")
-        break
 
 # Closing instance to save memory
 driver.quit()
