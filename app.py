@@ -57,7 +57,6 @@ def intercom_login():
         handle_exception(e)
 
 def intercom_change_status(change_status_to):
-    logging.info(f"Change intercom status to {change_status_to}")
     try:
         avatar = WebDriverWait(driver, 15).until(EC.element_to_be_clickable(
             (By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[1]/div[5]/div/div/div')))
@@ -79,6 +78,7 @@ def intercom_change_status(change_status_to):
         # Change status to Away if actual status is active
         if change_status_to == "Away" and status_active:
             WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[2]/div/div/button/span'))).click()
+            logging.info(f"Changed intercom status to {change_status_to}")
 
             # Reason "Done for the day"
             time.sleep(1)
@@ -96,6 +96,7 @@ def intercom_change_status(change_status_to):
         # Change status to Active if actual status is Away
         if change_status_to == "Active" and status_away:
             WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[2]/div/div/button/span'))).click()
+            logging.info(f"Changed intercom status to {change_status_to}")
     except:
         print("Failed to change intercom status")
 
@@ -253,6 +254,8 @@ while True:
         logging.info("Ending day")
         intercom_change_status("Away")
         break
+    else:
+        intercom_change_status("Active")
 
 # Closing instance to save memory
 driver.quit()
