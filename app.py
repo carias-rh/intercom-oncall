@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from datetime import datetime
 from selenium import webdriver
-
+from selenium.webdriver import ActionChains
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -16,6 +16,7 @@ options.set_preference("permissions.default.microphone", True)
 options.set_capability('browserName', 'firefox')
 driver = webdriver.Remote(command_executor=str(os.environ.get('SELENIUM_GRID_OPENSHIT_ROUTE')) + "/wd/hub", options=options)
 driver.get("https://app.intercom.com/a/inbox/jeuow7ss/inbox/admin/4643910?view=List")
+actions = ActionChains(driver)
 
 def handle_exception(e):
     exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -57,18 +58,16 @@ def intercom_login():
         handle_exception(e)
 
 def intercom_change_status(change_status_to):
+    logging.info(f"Change intercom status")
     try:
-        avatar = WebDriverWait(driver, 15).until(EC.element_to_be_clickable(
-            (By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[1]/div[5]/div/div/div')))
+        avatar = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(
+            (By.XPATH, "//div[contains(@class,'inbox2__avatar') and (contains(@class,'o__away') or contains(@class,'o__active'))]")))
         avatar.click()
         status_raw = avatar.get_attribute(
             "class")
     except:
-        avatar = WebDriverWait(driver, 15).until(EC.element_to_be_clickable(
-            (By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[1]/div[5]/div[2]/div/div')))
-        avatar.click()
-        status_raw = avatar.get_attribute(
-            "class")
+        logging.error("Failed to click on the avatar")
+
 
     # Get attributes from the gravatar
     status_away = re.findall("o__away", status_raw)
@@ -77,26 +76,26 @@ def intercom_change_status(change_status_to):
     try:
         # Change status to Away if actual status is active
         if change_status_to == "Away" and status_active:
-            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[2]/div/div/button/span'))).click()
-            logging.info(f"Changed intercom status to {change_status_to}")
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//div[@class='text-gray dark:text-dm-gray'][text()='Away mode']"))).click()
+            logging.info(f"Intercom status changed to {change_status_to}")
 
             # Reason "Done for the day"
             time.sleep(1)
             avatar.click()
-            reason = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[4]/div/div[1]/div/div[1]')))
+            reason = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//div[@class="flex-auto min-w-0"][text()="Add reason"]')))
             actions.move_to_element(reason).perform()
-            done_for_the_day = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[4]/div/div[2]/div/div/div/div[7]')))
+            done_for_the_day = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//div[@class="flex-auto min-w-0"][text()="🏡 Done for the day"]')))
             actions.move_to_element(done_for_the_day).click().perform()
 
             # Reassign replies
             time.sleep(1)
             avatar.click()
-            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[3]/div/div/button'))).click()
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '//div[@class="text-gray dark:text-dm-gray"][text()="Reassign replies"]'))).click()
 
         # Change status to Active if actual status is Away
         if change_status_to == "Active" and status_away:
-            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div/div/div/div/div[1]/div[2]/div/div/button/span'))).click()
-            logging.info(f"Changed intercom status to {change_status_to}")
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//div[@class='text-gray dark:text-dm-gray'][text()='Away mode']"))).click()
+            logging.info(f"Intercom status changed to {change_status_to}")
     except:
         print("Failed to change intercom status")
 
