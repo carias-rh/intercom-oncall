@@ -191,7 +191,7 @@ def get_customer_name():
 def is_expert_chat():
     # Detect if Expert or T2 mention in any message
     try:
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//div[@class="flex flex-col inbox2__conversation-stream"]//a[contains(text(), "Expert") or contains(text(), "@T2") or contains(text(), "Tier") or contains(text(), "assist")]')))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[contains(text(), "Expert") or contains(text(), "@T2") or contains(text(), "Tier") or contains(text(), "assist")]')))
         logging.debug("Is an expert chat")
         return True
     except:
