@@ -58,7 +58,6 @@ def intercom_login():
         handle_exception(e)
 
 def intercom_change_status(change_status_to):
-    logging.info(f"Change intercom status")
     try:
         avatar = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(
             (By.XPATH, "//div[contains(@class,'inbox2__avatar') and (contains(@class,'o__away') or contains(@class,'o__active'))]")))
@@ -180,7 +179,7 @@ def get_customer_name():
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Your inbox"]'))).click()
 
         # Get the name of the customer name in the list
-        customer_item = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//div[@class="flex flex-row items-center h-4"]')))
+        customer_item = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//div[@class="flex flex-row items-center h-4"]/div[1]')))
         customer_item.click()
         customer_name = customer_item.text.replace('\n', '')
         return customer_name
@@ -192,14 +191,14 @@ def get_customer_name():
 def is_expert_chat():
     # Detect if Expert or T2 mention in any message
     try:
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[2]/div[1]//*[contains(text(), "Expert") or contains(text(), "@T2") or contains(text(), "Tier") or contains(text(), "assist")]')))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//div[@class="flex flex-col inbox2__conversation-stream"]//a[contains(text(), "Expert") or contains(text(), "@T2") or contains(text(), "Tier") or contains(text(), "assist")]')))
         logging.debug("Is an expert chat")
         return True
     except:
         pass
     # Detect if there is a note
     try:
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[2]/div[1]//*[@data-part-group-category="4"]')))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//div[@data-part-group-category="4"]')))
         logging.debug("Is an expert chat transfered from T1")
         return True
     except:
@@ -209,15 +208,15 @@ def is_expert_chat():
 
 def say_hello():
     try:
-        # Make sure it's in reply mode, not note
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div/div/div[2]/div/div/div[2]/div[1]/div/a'))).send_keys('r')
+        # Make sure it's in reply mode, not note. Target any <a> element in the interface
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Your inbox"]/../../../a'))).send_keys('r')
         textbox = WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '//*[@role="textbox"]')))
         textbox.send_keys('#carlos_hello')
         textbox.send_keys(Keys.ENTER)
         time.sleep(1)
         textbox.send_keys(Keys.CONTROL + Keys.ENTER)
         time.sleep(1)
-        logging.info("Say Hello to student")
+        logging.info("Welcomed the student")
     except:
         logging.error("Failed to say Hello")
 
