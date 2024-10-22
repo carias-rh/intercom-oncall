@@ -59,14 +59,13 @@ def intercom_login():
 
 def intercom_change_status(change_status_to):
     try:
-        avatar = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(
+        avatar = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(
             (By.XPATH, "//div[contains(@class,'inbox2__avatar') and (contains(@class,'o__away') or contains(@class,'o__active'))]")))
         avatar.click()
         status_raw = avatar.get_attribute(
             "class")
     except:
         logging.error("Failed to click on the avatar")
-
 
     # Get attributes from the gravatar
     status_away = re.findall("o__away", status_raw)
@@ -159,7 +158,8 @@ def skype_call():
 
         # Say hello on intercom
         driver.switch_to.window(driver.window_handles[0])
-        say_hello()
+        if not is_welcome_message_present(new_customer_name):
+            say_hello()
         driver.switch_to.window(driver.window_handles[1])
 
         # Wait for the hang_up
@@ -219,6 +219,22 @@ def say_hello():
         logging.info("Welcomed the student")
     except:
         logging.error("Failed to say Hello")
+
+
+def is_welcome_message_present(username):
+    try:
+        # Construct the welcome message
+        welcome_message = f"Hi {username.split()[0]}, welcome to the Experts Chat!"
+        
+        # Locate the message element that contains the welcome message
+        WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located((By.XPATH, f"//*[contains(text(), '{welcome_message}')]"))
+        )
+        logging.info(f"Welcome message found for {username}")
+        return True
+    except:
+        logging.info(f"No welcome message found for {username}")
+        return False
 
 # Main
 logging.info("Starting selenium script")
