@@ -158,7 +158,7 @@ def skype_call():
 
         # Say hello on intercom
         driver.switch_to.window(driver.window_handles[0])
-        if not is_welcome_message_present(new_customer_name):
+        if not is_welcome_message_present():
             say_hello()
         driver.switch_to.window(driver.window_handles[1])
 
@@ -221,19 +221,17 @@ def say_hello():
         logging.error("Failed to say Hello")
 
 
-def is_welcome_message_present(username):
+def is_welcome_message_present():
     try:
         # Construct the welcome message
-        welcome_message = f"Hi {username.split()[0]}, welcome to the Experts Chat!"
-        
+        welcome_message = f", welcome to the Experts Chat!"
         # Locate the message element that contains the welcome message
-        WebDriverWait(driver, 5).until(
-            EC.presence_of_element_located((By.XPATH, f"//*[contains(text(), '{welcome_message}')]"))
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.XPATH, f"//p[contains(text(), '{welcome_message}')]"))
         )
-        logging.info(f"Welcome message found for {username}")
         return True
     except:
-        logging.info(f"No welcome message found for {username}")
+        logging.info(f"No welcome message found.")
         return False
 
 # Main
